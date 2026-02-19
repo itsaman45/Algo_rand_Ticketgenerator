@@ -1,0 +1,181 @@
+@import "tailwindcss";
+
+:root {
+  font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: dark;
+  color: rgba(255, 255, 255, 0.9);
+  background-color: #0f0e13;
+  /* Deep dark background */
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: radial-gradient(circle at 50% 0%, #1a1625 0%, #0f0e13 70%);
+  background-attachment: fixed;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f0e13;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2d2b3b;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3e3b52;
+}
+
+/* Glassmorphism utility class override/enhancement */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-card {
+  background: rgba(30, 30, 40, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  background: rgba(40, 40, 55, 0.7);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Gradient Text */
+.text-gradient {
+  background: linear-gradient(to right, #60a5fa, #c084fc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Tech / NEXUS utilities */
+.font-orbitron {
+  font-family: 'Orbitron', monospace;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Neon glow */
+.neon-cyan {
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.5), 0 0 40px rgba(34, 211, 238, 0.2);
+}
+
+.neon-purple {
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.5), 0 0 40px rgba(168, 85, 247, 0.2);
+}
+
+.neon-blue {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5), 0 0 40px rgba(59, 130, 246, 0.2);
+}
+
+/* Tech card with border glow */
+.tech-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%);
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  box-shadow: inset 0 0 60px rgba(34, 211, 238, 0.03), 0 0 30px rgba(0, 0, 0, 0.3);
+}
+
+.tech-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.4), transparent 40%, transparent 60%, rgba(168, 85, 247, 0.4));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Grid overlay */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Scanline effect */
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+.scanline::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent 50%, rgba(0, 0, 0, 0.02) 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+}
+
+/* Subtle pulse */
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+input,
+textarea,
+select {
+  background-color: rgba(0, 0, 0, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: rgb(255, 1, 1) !important;
+  transition: all 0.2s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #8b5cf6 !important;
+  /* Violet-500 */
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2) !important;
+  outline: none;
+}
