@@ -1,0 +1,31 @@
+name: Deploy to Algorand TestNet
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install AlgoKit
+        run: pip install algokit
+
+      - name: Import Account
+        run: |
+          echo "${{ secrets.ALGOD_MNEMONIC }}" > mnemonic.txt
+          algokit account import github_account --mnemonic "$(cat mnemonic.txt)"
+
+      - name: Deploy Contract
+        run: |
+          algokit project deploy --network testnet

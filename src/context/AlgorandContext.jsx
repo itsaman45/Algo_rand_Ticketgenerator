@@ -1,79 +1,125 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { PeraWalletConnect } from '@perawallet/connect';
-import * as algosdk from 'algosdk';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { PeraWalletConnect } from "@perawallet/connect";
+import algosdk from "algosdk";
 
+// ===============================
+// CONTEXT SETUP
+// ===============================
 const AlgorandContext = createContext();
 
 export const useAlgorand = () => useContext(AlgorandContext);
 
-// Create the PeraWalletConnect instance outside of the component to avoid re-creation
+// ===============================
+// Pera Wallet Instance
+// ===============================
 const peraWallet = new PeraWalletConnect({
     shouldShowSignTxnToast: true,
-    chainId: 416002, // TestNet - ensures wallet shows correct network for signing
+    chainId: 416002, // 416002 = Algorand TestNet
 });
 
+// ===============================
+// PROVIDER
+// ===============================
 export const AlgorandProvider = ({ children }) => {
     const [accountAddress, setAccountAddress] = useState(null);
-    const [status, setStatus] = useState('disconnected'); // disconnected, connecting, connected
+    const [status, setStatus] = useState("disconnected");
     const [algodClient, setAlgodClient] = useState(null);
     const [indexerClient, setIndexerClient] = useState(null);
 
+    // ===============================
+    // INITIALIZE CLIENTS + RECONNECT
+    // ===============================
     useEffect(() => {
-        // Initialize Algorand Client (Testnet via AlgoNode)
-        const client = new algosdk.Algodv2('', 'https://testnet-api.algonode.cloud', '');
-        setAlgodClient(client);
+        // --- Algod (TestNet via AlgoNode)
+        const algod = new algosdk.Algodv2(
+            "",
+            "https://testnet-api.algonode.cloud",
+            ""
+        );
 
-        const indexer = new algosdk.Indexer('', 'https://testnet-idx.algonode.cloud', '');
+        // --- Indexer (TestNet)
+        const indexer = new algosdk.Indexer(
+            "",
+            "https://testnet-idx.algonode.cloud",
+            ""
+        );
+
+        setAlgodClient(algod);
         setIndexerClient(indexer);
 
-        // Reconnect session
-        peraWallet.reconnectSession().then((accounts) => {
-            peraWallet.connector?.on("disconnect", handleDisconnectWalletClick);
+        // Attempt session reconnect
+        const reconnectWallet = async () => {
+            try {
+                const accounts = await peraWallet.reconnectSession();
 
-            if (accounts.length) {
-                setAccountAddress(accounts[0]);
-                setStatus('connected');
+                if (accounts.length) {
+                    setAccountAddress(accounts[0]);
+                    setStatus("connected");
+
+                    // Listen for disconnect
+                    peraWallet.connector?.on("disconnect", () => {
+                        handleDisconnectWalletClick();
+                    });
+                }
+            } catch (error) {
+                console.log("Reconnect Error:", error);
             }
-        }).catch((e) => console.log(e));
+        };
+
+        reconnectWallet();
 
         return () => {
             peraWallet.connector?.off("disconnect");
         };
     }, []);
 
-    const handleConnectWalletClick = () => {
-        setStatus('connecting');
-        peraWallet
-            .connect()
-            .then((newAccounts) => {
-                peraWallet.connector?.on("disconnect", handleDisconnectWalletClick);
-                setAccountAddress(newAccounts[0]);
-                setStatus('connected');
-            })
-            .catch((error) => {
-                if (error?.data?.type !== "CONNECT_MODAL_CLOSED") {
-                    console.log(error);
-                }
-                setStatus('disconnected');
+    // ===============================
+    // CONNECT WALLET
+    // ===============================
+    const handleConnectWalletClick = async () => {
+        setStatus("connecting");
+
+        try {
+            const accounts = await peraWallet.connect();
+
+            setAccountAddress(accounts[0]);
+            setStatus("connected");
+
+            peraWallet.connector?.on("disconnect", () => {
+                handleDisconnectWalletClick();
             });
+        } catch (error) {
+            if (error?.data?.type !== "CONNECT_MODAL_CLOSED") {
+                console.log("Connection Error:", error);
+            }
+            setStatus("disconnected");
+        }
     };
 
+    // ===============================
+    // DISCONNECT WALLET
+    // ===============================
     const handleDisconnectWalletClick = () => {
         peraWallet.disconnect();
         setAccountAddress(null);
-        setStatus('disconnected');
+        setStatus("disconnected");
     };
 
+    // ===============================
+    // CONTEXT VALUE
+    // ===============================
     return (
-        <AlgorandContext.Provider value={{
-            accountAddress,
-            status,
-            handleConnectWalletClick,
-            handleDisconnectWalletClick,
-            peraWallet,
-            algodClient,
-            indexerClient
-        }}>
+        <AlgorandContext.Provider
+            value={{
+                accountAddress,
+                status,
+                handleConnectWalletClick,
+                handleDisconnectWalletClick,
+                peraWallet,
+                algodClient,
+                indexerClient,
+            }}
+        >
             {children}
         </AlgorandContext.Provider>
     );
