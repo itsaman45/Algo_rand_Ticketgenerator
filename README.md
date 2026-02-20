@@ -1,5 +1,9 @@
 # NEXUS · Web3 Event Ticketing on Algorand
 
+# LinkedIn URL: https://www.linkedin.com/feed/update/urn:li:activity:7430420495298142208/
+
+# App ID: 755804005
+
 <p align="center">
   <strong>Mint, sell, and verify event tickets as Algorand Standard Assets (ASAs)</strong>
 </p>
