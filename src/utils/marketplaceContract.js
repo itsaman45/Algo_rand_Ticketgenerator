@@ -1,10 +1,21 @@
-import * as algosdk from 'algosdk';
+export const APP_ID = 755804005;
+import * as algosdk from "algosdk";
 
+/*
+====================================================
+GENERATE TEAL SMART CONTRACT SOURCE
+====================================================
+assetId → ASA id (ticket NFT)
+price → price in microAlgos
+creatorAddress → seller wallet
+*/
 export const getSmartContractSource = (assetId, price, creatorAddress) => {
     return `
-#pragma version 5
+#pragma version 6
 
-// Check if it's an Opt-In transaction (Asset Transfer to Self)
+// =============================
+// HANDLE OPT-IN TRANSACTION
+// =============================
 txn TypeEnum
 int axfer
 ==
@@ -14,7 +25,10 @@ txn Sender
 &&
 bnz handle_optin
 
-// Check if it's a Sale (Group Size 3: OptIn, Payment, Transfer)
+// =============================
+// HANDLE SALE TRANSACTION
+// (group of 3 txns)
+// =============================
 global GroupSize
 int 3
 ==
@@ -24,17 +38,23 @@ int 2
 &&
 bnz handle_sale
 
-err // unnecessary fallthrough protection
+err
 
+// =============================
+// OPT-IN LOGIC
+// =============================
 handle_optin:
-// Allow opt-in to the specific asset
 txn XferAsset
 int ${assetId}
 ==
 return
 
+// =============================
+// SALE LOGIC
+// =============================
 handle_sale:
-// Verify Payment Transaction (Txn 1 - Payment to Creator)
+
+// Verify payment transaction (Txn 1)
 gtxn 1 TypeEnum
 int pay
 ==
@@ -43,11 +63,11 @@ addr ${creatorAddress}
 ==
 &&
 gtxn 1 Amount
-int ${price} // Price in MicroAlgos
+int ${price}
 >=
 &&
 
-// Verify Asset Transfer Transaction (Txn 2 - Current Txn - Transfer to Buyer)
+// Verify asset transfer (Txn 2)
 txn TypeEnum
 int axfer
 ==
@@ -64,9 +84,19 @@ return
 `;
 };
 
+/*
+====================================================
+COMPILE PROGRAM → BYTECODE
+====================================================
+*/
 export const compileProgram = async (algodClient, source) => {
     const encoder = new TextEncoder();
     const programBytes = encoder.encode(source);
-    const compileResponse = await algodClient.compile(programBytes).do();
-    return compileResponse; // { result: "base64...", hash: "addr..." }
+
+    const compileResponse = await algodClient
+        .compile(programBytes)
+        .do();
+
+    // convert base64 → Uint8Array (required by SDK)
+    return new Uint8Array(Buffer.from(compileResponse.result, "base64"));
 };
