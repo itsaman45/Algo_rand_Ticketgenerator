@@ -74,26 +74,13 @@ body {
 }
 
 /* Tech / NEXUS utilities */
-.font-orbitron {
-  font-family: 'Orbitron', monospace;
-}
-
-.font-mono {
-  font-family: 'JetBrains Mono', monospace;
-}
+.font-orbitron { font-family: 'Orbitron', monospace; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
 
 /* Neon glow */
-.neon-cyan {
-  box-shadow: 0 0 20px rgba(34, 211, 238, 0.5), 0 0 40px rgba(34, 211, 238, 0.2);
-}
-
-.neon-purple {
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.5), 0 0 40px rgba(168, 85, 247, 0.2);
-}
-
-.neon-blue {
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.5), 0 0 40px rgba(59, 130, 246, 0.2);
-}
+.neon-cyan { box-shadow: 0 0 20px rgba(34, 211, 238, 0.5), 0 0 40px rgba(34, 211, 238, 0.2); }
+.neon-purple { box-shadow: 0 0 20px rgba(168, 85, 247, 0.5), 0 0 40px rgba(168, 85, 247, 0.2); }
+.neon-blue { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5), 0 0 40px rgba(59, 130, 246, 0.2); }
 
 /* Tech card with border glow */
 .tech-card {
@@ -102,7 +89,6 @@ body {
   border: 1px solid rgba(34, 211, 238, 0.2);
   box-shadow: inset 0 0 60px rgba(34, 211, 238, 0.03), 0 0 30px rgba(0, 0, 0, 0.3);
 }
-
 .tech-card::before {
   content: '';
   position: absolute;
@@ -119,7 +105,7 @@ body {
 
 /* Grid overlay */
 .grid-bg {
-  background-image:
+  background-image: 
     linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px);
   background-size: 40px 40px;
@@ -127,15 +113,9 @@ body {
 
 /* Scanline effect */
 @keyframes scanline {
-  0% {
-    transform: translateY(-100%);
-  }
-
-  100% {
-    transform: translateY(100vh);
-  }
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
 }
-
 .scanline::after {
   content: '';
   position: absolute;
@@ -147,27 +127,17 @@ body {
 
 /* Subtle pulse */
 @keyframes pulse-glow {
-
-  0%,
-  100% {
-    opacity: 0.6;
-  }
-
-  50% {
-    opacity: 1;
-  }
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
 }
-
-.animate-pulse-glow {
-  animation: pulse-glow 3s ease-in-out infinite;
-}
+.animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
 
 input,
 textarea,
 select {
   background-color: rgba(0, 0, 0, 0.2) !important;
   border-color: rgba(255, 255, 255, 0.1) !important;
-  color: rgb(255, 1, 1) !important;
+  color: white !important;
   transition: all 0.2s;
 }
 
